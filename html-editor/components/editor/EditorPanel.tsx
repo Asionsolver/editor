@@ -1,9 +1,14 @@
 "use client";
 
 import React from "react";
+import dynamic from "next/dynamic";
 import { MetaFields } from "./MetaFields";
-import { CodeEditor } from "./CodeEditor";
 import type { EditorState } from "@/hooks/useEditorState";
+
+const CodeEditor = dynamic(
+  () => import("./CodeEditor").then((mod) => mod.CodeEditor),
+  { ssr: false },
+);
 
 interface EditorPanelProps {
   editorState: EditorState;

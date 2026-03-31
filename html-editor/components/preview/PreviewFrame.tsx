@@ -38,8 +38,97 @@ export function PreviewFrame({ html, mode }: PreviewFrameProps) {
   useEffect(() => {
     const iframe = iframeRef.current;
     if (!iframe) return;
-    // Use srcdoc attribute for safe sandboxed rendering
+
+    const normalizeAnchors = (doc: Document) => {
+      const anchors = doc.querySelectorAll<HTMLAnchorElement>("a[href]");
+
+      anchors.forEach((anchor) => {
+        const href = anchor.getAttribute("href")?.trim() ?? "";
+        const lowerHref = href.toLowerCase();
+
+        // Make placeholders inert so they cannot trigger navigation.
+        if (
+          !href ||
+          href.startsWith("#") ||
+          lowerHref.startsWith("javascript:")
+        ) {
+          anchor.setAttribute("href", "javascript:void(0)");
+          anchor.setAttribute("role", "button");
+          return;
+        }
+
+        // Force valid links to open outside the preview iframe.
+        anchor.setAttribute("target", "_blank");
+        anchor.setAttribute("rel", "noopener noreferrer");
+      });
+    };
+
+    const getAnchorFromTarget = (target: EventTarget | null) => {
+      if (!target) return null;
+      if (target instanceof HTMLAnchorElement) return target;
+      if (target instanceof Element) {
+        return target.closest("a[href]") as HTMLAnchorElement | null;
+      }
+      if (target instanceof Node && target.parentElement) {
+        return target.parentElement.closest(
+          "a[href]",
+        ) as HTMLAnchorElement | null;
+      }
+      return null;
+    };
+
+    const handleLinkClick = (event: MouseEvent) => {
+      const anchor = getAnchorFromTarget(event.target);
+      if (!anchor) return;
+
+      const href = anchor.getAttribute("href")?.trim();
+      if (!href) return;
+
+      // Prevent iframe navigation to avoid loading app routes inside the preview.
+      event.preventDefault();
+      event.stopPropagation();
+
+      // Placeholder and in-document links should not navigate the iframe.
+      if (
+        href.startsWith("#") ||
+        href.toLowerCase().startsWith("javascript:")
+      ) {
+        return;
+      }
+
+      if (href.startsWith("mailto:") || href.startsWith("tel:")) {
+        window.open(href, "_blank", "noopener,noreferrer");
+        return;
+      }
+
+      try {
+        const resolvedUrl = new URL(href, window.location.href);
+        window.open(resolvedUrl.toString(), "_blank", "noopener,noreferrer");
+      } catch {
+        // Ignore malformed href values to keep preview stable.
+      }
+    };
+
+    const bindLinkInterceptor = () => {
+      const doc = iframe.contentDocument;
+      if (!doc) return;
+      normalizeAnchors(doc);
+      doc.addEventListener("click", handleLinkClick, true);
+    };
+
+    const unbindLinkInterceptor = () => {
+      const doc = iframe.contentDocument;
+      if (!doc) return;
+      doc.removeEventListener("click", handleLinkClick, true);
+    };
+
+    iframe.addEventListener("load", bindLinkInterceptor);
     iframe.srcdoc = buildSrcdoc(html);
+
+    return () => {
+      iframe.removeEventListener("load", bindLinkInterceptor);
+      unbindLinkInterceptor();
+    };
   }, [html]);
 
   return (
@@ -50,7 +139,7 @@ export function PreviewFrame({ html, mode }: PreviewFrameProps) {
         ref={iframeRef}
         className="preview-frame"
         title="HTML Preview"
-        sandbox="allow-same-origin"
+        sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
         aria-label="Live HTML preview"
       />
     </div>

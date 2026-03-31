@@ -4,9 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import Prettier from "prettier/standalone";
 import parserHtml from "prettier/plugins/html";
 
-const DEFAULT_HTML = `<h1>Example HTML template</h1>
-<p>Please paste your HTML code here.</p>
-<a href="{% unsubscribeLink %}">Unsubscribe</a>`;
+const DEFAULT_HTML = ``;
 
 export interface EditorState {
   code: string;
