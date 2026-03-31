@@ -38,11 +38,13 @@ function InlineField({
   };
 
   return (
-    <div className="meta-field">
-      <span className="meta-field__label">{label}</span>
+    <div className="mb-1 flex min-h-6 items-center gap-1.5 text-[13px] text-gray-700">
+      <span className="min-w-[54px] shrink-0 font-medium text-gray-500">
+        {label}
+      </span>
       {editing ? (
         <input
-          className="meta-field__input"
+          className="flex-1 border-0 border-b border-[#6c47ff] bg-transparent py-px text-[13px] text-gray-900 outline-none"
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onBlur={handleBlur}
@@ -52,18 +54,16 @@ function InlineField({
         />
       ) : (
         <span
-          className="meta-field__value"
+          className="group flex flex-1 cursor-pointer items-center gap-1.5 rounded-[3px] px-0.5 py-px text-gray-900"
           onClick={() => setEditing(true)}
           role="button"
           tabIndex={0}
           onKeyDown={(e) => e.key === "Enter" && setEditing(true)}
         >
-          {value || (
-            <span className="meta-field__placeholder">{placeholder}</span>
-          )}
+          {value || <span className="italic text-gray-400">{placeholder}</span>}
           {value && (
             <button
-              className="meta-field__edit-btn"
+              className="inline-flex items-center bg-transparent p-0 text-gray-400 opacity-0 transition hover:text-gray-700 group-hover:opacity-100"
               onClick={(e) => {
                 e.stopPropagation();
                 setEditing(true);
@@ -95,12 +95,12 @@ export function MetaFields({
   const [editingCampaign, setEditingCampaign] = useState(false);
 
   return (
-    <div className="meta-fields">
+    <div className="mb-4 shrink-0">
       {/* Campaign Name */}
-      <div className="meta-campaign">
+      <div className="mb-3">
         {editingCampaign ? (
           <input
-            className="meta-campaign__input"
+            className="w-full border-0 border-b-2 border-[#6c47ff] bg-transparent p-0 text-[22px] font-bold leading-[1.2] text-gray-900 outline-none"
             value={campaignName}
             onChange={(e) => onCampaignNameChange(e.target.value)}
             onBlur={() => setEditingCampaign(false)}
@@ -108,10 +108,12 @@ export function MetaFields({
             autoFocus
           />
         ) : (
-          <div className="meta-campaign__display">
-            <h2 className="meta-campaign__name">{campaignName}</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="m-0 text-[22px] font-bold leading-[1.2] text-gray-900">
+              {campaignName}
+            </h2>
             <button
-              className="meta-campaign__edit-btn"
+              className="inline-flex items-center justify-center rounded-[3px] border-0 bg-transparent p-0.5 text-gray-400 transition hover:text-gray-700"
               onClick={() => setEditingCampaign(true)}
               aria-label="Edit campaign name"
             >

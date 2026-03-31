@@ -19,7 +19,7 @@ export function CodeEditor({ code, onChange, textareaRef }: CodeEditorProps) {
       preRef.current.innerHTML = Prism.highlight(
         code,
         Prism.languages.markup,
-        "markup"
+        "markup",
       );
     }
   }, [code]);
@@ -28,7 +28,7 @@ export function CodeEditor({ code, onChange, textareaRef }: CodeEditorProps) {
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       onChange(e.target.value);
     },
-    [onChange]
+    [onChange],
   );
 
   const handleKeyDown = useCallback(
@@ -52,7 +52,7 @@ export function CodeEditor({ code, onChange, textareaRef }: CodeEditorProps) {
         });
       }
     },
-    [onChange]
+    [onChange],
   );
 
   // Sync scroll between textarea and pre
@@ -66,29 +66,36 @@ export function CodeEditor({ code, onChange, textareaRef }: CodeEditorProps) {
   const lineCount = code.split("\n").length;
 
   return (
-    <div className="code-editor">
+    <div className="flex min-h-0 flex-1 overflow-hidden rounded-t-[8px] bg-[#0f0f1a] font-mono text-[13px] leading-[1.6]">
       {/* Line numbers */}
-      <div className="code-editor__gutter" aria-hidden="true">
+      <div
+        className="flex w-11 shrink-0 select-none flex-col items-end overflow-hidden border-r border-r-white/10 bg-[#0f0f1a] py-3"
+        aria-hidden="true"
+      >
         {Array.from({ length: lineCount }, (_, i) => (
-          <div key={i + 1} className="code-editor__line-num">
+          <div
+            key={i + 1}
+            className="px-2 text-[12px] leading-[1.6] text-[#4d4d6b]"
+          >
             {i + 1}
           </div>
         ))}
       </div>
 
       {/* Editor area: overlay highlight + textarea */}
-      <div className="code-editor__area">
+      <div className="relative flex-1 overflow-hidden">
         {/* Syntax highlighted display (underneath) */}
         <pre
           ref={preRef}
-          className="code-editor__highlight language-markup"
+          className="language-markup pointer-events-none absolute inset-0 z-1 m-0 overflow-auto whitespace-pre-wrap break-all bg-transparent p-[12px_16px] font-mono text-[13px] leading-[1.6] text-[#c9d1d9] [tab-size:2]"
           aria-hidden="true"
         />
 
         {/* Actual editable textarea (on top, transparent) */}
         <textarea
           ref={textareaRef}
-          className="code-editor__textarea"
+          className="absolute inset-0 z-2 m-0 resize-none overflow-auto whitespace-pre-wrap break-all border-0 bg-transparent p-[12px_16px] font-mono text-[13px] leading-[1.6] text-transparent caret-[#ffffff] outline-none [tab-size:2] selection:bg-[rgba(108,71,255,0.3)]"
+          style={{ WebkitTextFillColor: "transparent" }}
           value={code}
           onChange={handleChange}
           onKeyDown={handleKeyDown}

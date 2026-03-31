@@ -12,9 +12,17 @@ interface DeviceSwitcherProps {
 
 export function DeviceSwitcher({ mode, onChange }: DeviceSwitcherProps) {
   return (
-    <div className="device-switcher" role="group" aria-label="Preview device mode">
+    <div
+      className="flex items-center gap-0.5 rounded-md bg-[#f3f4f6] p-0.5"
+      role="group"
+      aria-label="Preview device mode"
+    >
       <button
-        className={`device-switcher__btn${mode === "desktop" ? " device-switcher__btn--active" : ""}`}
+        className={`inline-flex h-[26px] w-[30px] items-center justify-center rounded-lg border-0 transition ${
+          mode === "desktop"
+            ? "bg-gray-800 text-white hover:bg-gray-900"
+            : "bg-transparent text-gray-500 hover:bg-[#e5e7eb] hover:text-gray-700"
+        }`}
         onClick={() => onChange("desktop")}
         aria-label="Desktop preview"
         aria-pressed={mode === "desktop"}
@@ -23,7 +31,11 @@ export function DeviceSwitcher({ mode, onChange }: DeviceSwitcherProps) {
         <Monitor size={16} />
       </button>
       <button
-        className={`device-switcher__btn${mode === "mobile" ? " device-switcher__btn--active" : ""}`}
+        className={`inline-flex h-[26px] w-[30px] items-center justify-center rounded-lg border-0 transition ${
+          mode === "mobile"
+            ? "bg-gray-800 text-white hover:bg-gray-900"
+            : "bg-transparent text-gray-500 hover:bg-[#e5e7eb] hover:text-gray-700"
+        }`}
         onClick={() => onChange("mobile")}
         aria-label="Mobile preview"
         aria-pressed={mode === "mobile"}

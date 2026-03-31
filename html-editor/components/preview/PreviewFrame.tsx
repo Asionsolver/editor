@@ -133,11 +133,15 @@ export function PreviewFrame({ html, mode }: PreviewFrameProps) {
 
   return (
     <div
-      className={`preview-frame-wrapper${mode === "mobile" ? " preview-frame-wrapper--mobile" : ""}`}
+      className={`flex flex-1 justify-center overflow-auto ${mode === "mobile" ? "items-start" : ""}`}
     >
       <iframe
         ref={iframeRef}
-        className="preview-frame"
+        className={
+          mode === "mobile"
+            ? "h-auto min-h-[600px] w-[375px] rounded-[8px] border border-[#e5e7eb] bg-white shadow-[0_4px_16px_rgba(0,0,0,0.08)]"
+            : "h-full w-full rounded-lg border-0 bg-white"
+        }
         title="HTML Preview"
         sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
         aria-label="Live HTML preview"

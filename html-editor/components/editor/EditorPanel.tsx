@@ -38,7 +38,10 @@ export function EditorPanel({
   onPreviewChange,
 }: EditorPanelProps) {
   return (
-    <section className="editor-panel" aria-label="HTML Code Editor">
+    <section
+      className="flex flex-col overflow-hidden border-r border-[#e5e7eb] bg-white px-6 pt-6"
+      aria-label="HTML Code Editor"
+    >
       <MetaFields
         campaignName={campaignName}
         subject={subject}

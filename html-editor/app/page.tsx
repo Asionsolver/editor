@@ -20,7 +20,11 @@ export default function Home() {
 
   const handleSave = () => {
     // TODO: implement save logic
-    console.log("Save clicked", { campaignName, subject, code: editorState.code });
+    console.log("Save clicked", {
+      campaignName,
+      subject,
+      code: editorState.code,
+    });
   };
 
   const handleTestEmail = () => {
@@ -29,9 +33,9 @@ export default function Home() {
   };
 
   return (
-    <div className="app-root">
+    <div className="flex h-screen flex-col overflow-hidden bg-[#f9fafb]">
       <AppHeader onSave={handleSave} onTestEmail={handleTestEmail} />
-      <main className="app-main">
+      <main className="grid flex-1 grid-cols-2 overflow-hidden">
         <EditorPanel
           editorState={editorState}
           campaignName={campaignName}
